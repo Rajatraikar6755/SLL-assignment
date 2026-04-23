@@ -1,0 +1,6 @@
+Full Name: Rajat Raghavendra Raikar
+Email: rajatyout1063ube@gmail.com
+Phone: 7676726755
+GitHub Profile: https://github.com/Rajatraikar6755
+
+Most Challenging Part: Configuring the cross-origin communication and deployment handshakes between the Railway backend and the Vercel frontend was the most challenging part of the project.
