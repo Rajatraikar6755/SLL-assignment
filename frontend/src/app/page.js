@@ -26,5 +26,23 @@ export default async function Home() {
     redirect("/onboarding");
   }
 
+  // Check if user exists in the database
+  try {
+    const token = (await (await auth()).getToken());
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+      cache: 'no-store'
+    });
+    
+    if (res.status === 403 || res.status === 404) {
+      // User is in Clerk but not in DB
+      redirect("/onboarding");
+    }
+  } catch (error) {
+    console.error("Failed to verify user in DB:", error);
+    // If backend is down, we might still want to redirect or show error, 
+    // but for now let's assume if we can't check, we might as well try dashboard
+  }
+
   redirect(`/dashboards/${role.toLowerCase().replace('_', '-')}`);
 }

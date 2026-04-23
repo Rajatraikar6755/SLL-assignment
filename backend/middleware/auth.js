@@ -10,6 +10,7 @@ const checkRole = (allowedRoles) => {
     try {
       // req.auth comes from ClerkExpressRequireAuth
       if (!req.auth || !req.auth.userId) {
+        console.warn("🔒 Auth failed: Missing userId in request");
         return res.status(401).json({ error: "Unauthorized: Missing authentication" });
       }
 
@@ -21,14 +22,19 @@ const checkRole = (allowedRoles) => {
       });
 
       if (!user) {
-        // This could happen if the webhook hasn't fired yet or failed
-        return res.status(403).json({ error: "Forbidden: User not found in database" });
+        console.warn(`👤 User not found in DB: ${clerkUserId}. They likely need to complete onboarding.`);
+        return res.status(403).json({ 
+          error: "Forbidden: User not found in database",
+          code: "USER_NOT_ONBOARDED",
+          clerkUserId 
+        });
       }
 
       // Check if user's role is in the allowed roles
       if (!allowedRoles.includes(user.role)) {
+        console.warn(`🚫 Permission denied: User ${clerkUserId} has role ${user.role}, but route requires one of: ${allowedRoles.join(", ")}`);
         return res.status(403).json({ 
-          error: "Forbidden: You do not have the required permissions" 
+          error: `Forbidden: Role ${user.role} is not authorized for this action` 
         });
       }
 
@@ -36,7 +42,7 @@ const checkRole = (allowedRoles) => {
       req.dbUser = user;
       next();
     } catch (error) {
-      console.error("RBAC Middleware Error:", error);
+      console.error("🔥 RBAC Middleware Error:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   };

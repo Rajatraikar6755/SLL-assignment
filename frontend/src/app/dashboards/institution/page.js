@@ -21,6 +21,11 @@ export default function InstitutionDashboard() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/institutions/${user.id}/summary`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
+      if (res.status === 403 || res.status === 401) {
+        // Most likely the user is not in the database
+        window.location.href = '/onboarding'
+        return
+      }
       if (!res.ok) throw new Error('Failed to fetch institution summary')
       const data = await res.json()
       setSummary(data)

@@ -7,18 +7,32 @@ const { checkRole } = require("./middleware/auth");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Diagnostic checks for environment variables
+if (!process.env.CLERK_SECRET_KEY) {
+  console.warn("⚠️  WARNING: CLERK_SECRET_KEY is not set in environment variables!");
+}
+if (!process.env.DATABASE_URL) {
+  console.warn("⚠️  WARNING: DATABASE_URL is not set in environment variables!");
+}
+
 app.use(cors({
   origin: function (origin, callback) {
-    const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:3000"].filter(Boolean);
+    const allowedOrigins = [
+      process.env.FRONTEND_URL, 
+      "http://localhost:3000",
+      "http://localhost:5173"
+    ].filter(Boolean);
+    
+    // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
     
-    const isVercel = origin.endsWith(".vercel.app");
+    const isVercel = origin.includes("vercel.app");
     const isAllowed = allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(o => origin.startsWith(o));
 
     if (isAllowed || isVercel) {
       callback(null, true);
     } else {
-      console.log("Blocked by CORS:", origin);
+      console.error(`❌ CORS Blocked: ${origin}. Allowed: ${allowedOrigins.join(", ")} or any .vercel.app`);
       callback(new Error('Not allowed by CORS'));
     }
   },

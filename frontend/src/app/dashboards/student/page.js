@@ -22,6 +22,10 @@ export default function StudentDashboard() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions/student`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
+      if (res.status === 403 || res.status === 401) {
+        window.location.href = '/onboarding'
+        return
+      }
       if (!res.ok) throw new Error('Failed to fetch sessions')
       const data = await res.json()
       setSessions(data)

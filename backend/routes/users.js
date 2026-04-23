@@ -8,6 +8,23 @@ const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY 
 
 router.use(ClerkExpressRequireAuth({}));
 
+router.get("/me", async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId: req.auth.userId }
+    });
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found in database" });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const { clerkUserId, name, role } = req.body;

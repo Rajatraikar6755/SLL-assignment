@@ -36,6 +36,10 @@ export default function TrainerDashboard() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/batches/trainer`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
+      if (res.status === 403 || res.status === 401) {
+        window.location.href = '/onboarding'
+        return
+      }
       if (!res.ok) throw new Error('Failed to fetch batches')
       const data = await res.json()
       setBatches(data)
