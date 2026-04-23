@@ -12,11 +12,11 @@ I've set up these accounts in Clerk for easy testing of each role:
 
 | Who is it? | Email | Password |
 |------------|-------|----------|
-| **Programme Manager** | pm@test.com | Password123! |
-| **Monitoring Officer** | monitor@test.com | Password123! |
-| **Institution User** | inst@test.com | Password123! |
-| **Trainer** | trainer@test.com | Password123! |
-| **Student** | student@test.com | Password123! |
+| **Programme Manager** | pm@test.com | 123456789 |
+| **Monitoring Officer** | monitor@test.com | 123456789 |
+| **Institution User** | inst@test.com | 123456789 |
+| **Trainer** | trainer@test.com | 123456789 |
+| **Student** | student@test.com | 123456789 |
 
 ## 💻 Running it locally
 1.  **Backend**: Go to `/backend`, run `npm install`, add your `.env` (database and clerk keys), then run `npx prisma db push` and `node index.js`.
